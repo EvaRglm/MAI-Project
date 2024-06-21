@@ -1,2 +1,2 @@
 # MAI Project
-Attacking a Visual Grounding Model
+Attacking a Visual Grounding Model locally
