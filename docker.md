@@ -9,12 +9,12 @@ pip install einops shapely timm yacs tensorboardX ftfy prettytable pymongo
 pip install transformers
 pip install inflect
 python setup.py build develop --user
-git clone https://github.com/microsoft/GLIP.git
-cd GLIP
-mkdir PREDICTIONS
-mkdir MODEL
-cd MODEL
-git clone https://huggingface.co/harold/GLIP
-cd ..
+# git clone https://github.com/microsoft/GLIP.git
+# cd GLIP
+# mkdir PREDICTIONS
+# mkdir MODEL
+# cd MODEL
+# git clone https://huggingface.co/harold/GLIP
+# cd ..
 python tools/test_grounding_net.py --config-file configs/pretrain/glip_Swin_T_O365_GoldG.yaml --weight MODEL/glip_tiny_model_o365_goldg.pth TEST.IMS_PER_BATCH 1 MODEL.DYHEAD.SCORE_AGG "MEAN" TEST.EVAL_TASK detection MODEL.DYHEAD.FUSE_CONFIG.MLM_LOSS False OUTPUT_DIR PREDICTIONS
 ```
