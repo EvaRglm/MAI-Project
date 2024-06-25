@@ -1,17 +1,16 @@
 # Create docker image
 ```bash
 docker pull pengchuanzhang/maskrcnn:ubuntu18-py3.7-cuda10.2-pytorch1.9
-docker build . -t test
+# docker build . -t test
 docker run -it -v /teamspace/studios/this_studio/GLIP:/usr/local/bin --ipc=host --gpus all 29e307b180e8 sh
-docker run -it -v /teamspace/studios/this_studio/GLIP:/usr/local/bin 29e307b180e8 sh
+# docker run -it -v /teamspace/studios/this_studio/GLIP:/usr/local/bin 29e307b180e8 sh
 # a83b74cf68a8
 # docker exec -it <container_name> sh
 cd usr/local/bin
-pip install torch==1.9.0 torchvision torchaudio einops shapely timm yacs tensorboardX ftfy prettytable pymongo transformers inflect
+# pip install torch==1.9.0 torchvision torchaudio einops shapely timm yacs tensorboardX ftfy prettytable pymongo transformers inflect
 pip install einops shapely timm yacs tensorboardX ftfy prettytable pymongo transformers inflect
-pip install transformers
-pip install inflect
 python setup.py build develop --user
+python setup.py clean --all build develop --user
 # git clone https://github.com/microsoft/GLIP.git
 # cd GLIP
 # mkdir PREDICTIONS
