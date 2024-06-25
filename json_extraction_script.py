@@ -1,17 +1,15 @@
 import os
 import json
 import shutil
+import regex as re
 
 def extract_filenames_and_img_ids(directory, num):
-    # Specify the directory containing the images
-    directory = 'GLIP/DATASET/coco/val2017'
-
     # Get a list of all files in the directory
     all_img_files = os.listdir(directory)
 
     # Get the first n files
     img_files = all_img_files[:num]
-    img_ids = [int(img_file.replace('0','').replace('.jpg','')) for img_file in img_files]
+    img_ids = [int(re.search(r'\d+', img_file).group().lstrip('0')) for img_file in img_files]
     print(img_ids)
 
     return img_files, img_ids
@@ -55,16 +53,16 @@ def extract_elements_from_json(json_data, img_ids):
 
 # extract filenames and image ids
 num = 10
-img_dir = 'GLIP/DATASET/coco/val2017'
+img_dir = 'DATASET_b/coco/val2017'
 img_files, img_ids = extract_filenames_and_img_ids(img_dir, num)
 
 # extract specific image files
-dst_dir = 'GLIP/DATASET/coco/val2017_filtered'
+dst_dir = 'GLIP/DATASET/coco/val2017'
 copy_specific_files(img_dir, dst_dir, img_files)
 
 # extract specific image annotations
-input_file_path = 'GLIP/DATASET/coco/annotations/instances_val2017.json'
-output_file_path = 'GLIP/DATASET/coco/annotations/instances_val2017_filtered.json'
+input_file_path = 'DATASET_b/coco/annotations/instances_val2017.json'
+output_file_path = 'GLIP/DATASET/coco/annotations/instances_val2017.json'
 
 with open(input_file_path, 'r') as file:
     json_data = json.load(file)
