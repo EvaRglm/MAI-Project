@@ -4,6 +4,7 @@ import logging
 import time
 import os
 import re
+import json ###
 
 import torch
 from tqdm import tqdm
@@ -321,6 +322,7 @@ def resize_box(output, targets):
 def flickr_post_process(output, targets, positive_map_label_to_token, plus):
     output = resize_box(output, targets)
     scores, indices = torch.topk(output.extra_fields["scores"], k = len(output.extra_fields["scores"]), sorted=True)
+    scores = scores.tolist() ###
     boxes = output.bbox.tolist()
     boxes = [boxes[i] for i in indices]
     labels = [output.extra_fields["labels"][i] for i in indices]
@@ -378,6 +380,10 @@ def write_flickr_results(results, output_file_name):
     with open(output_file_name, "w") as f:
         f.write(string_to_write)
     return
+
+def write_flickr_json(mdetr_style_output, output_file_name):
+    with open(output_file_name, "w") as f:
+        json.dump(mdetr_style_output, f)
 
 def inference(
         model,
@@ -447,6 +453,7 @@ def inference(
         _iterator = tqdm(data_loader)
     else:
         _iterator = data_loader
+    flickr30k_results = []
     for i, batch in enumerate(_iterator):
         if i == cfg.TEST.SUBSET:
             break
@@ -504,6 +511,7 @@ def inference(
                             plus # This is only used in Flickr
                         )
                         mdetr_style_output.append(new_output)
+                        flickr30k_results.append(new_output) ###
                     elif "lvis" in cfg.DATASETS.TEST[0]:
                         output = output[0]
                         output = resize_box(output, targets)
@@ -584,6 +592,7 @@ def inference(
         if is_main_process():
             if "flickr" in cfg.DATASETS.TEST[0]:
                 write_flickr_results(score, output_file_name=os.path.join(output_folder, "bbox.csv"))
+                write_flickr_json(flickr30k_results, output_file_name=os.path.join(output_folder, "bbox.json")) ###
             elif "lvis" in cfg.DATASETS.TEST[0]:
                 write_lvis_results(score, output_file_name=os.path.join(output_folder, "bbox.csv"))
         try:
