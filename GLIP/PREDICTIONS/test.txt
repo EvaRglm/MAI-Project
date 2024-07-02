@@ -1,0 +1,16 @@
+0:suits:0.69
+1:suits:0.66
+2:a group:0.62
+3:men:0.62
+4:a group:0.62
+5:men:0.62
+6:a group:0.61
+7:men:0.61
+8:suits:0.61
+9:a park sidewalk:0.61
+10:suits:0.60
+11:suits:0.58
+12:men:0.57
+13:a group:0.57
+14:men:0.55
+15:a group:0.55
