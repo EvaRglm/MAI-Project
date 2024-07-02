@@ -8,6 +8,7 @@ import inflect
 from transformers import AutoTokenizer
 from torchvision import transforms as T
 import pdb
+import os
 from maskrcnn_benchmark.modeling.detector import build_detection_model
 from maskrcnn_benchmark.utils.checkpoint import DetectronCheckpointer
 from maskrcnn_benchmark.structures.image_list import to_image_list
@@ -299,13 +300,13 @@ class GLIPDemo(object):
             pass
         return colors
 
-    def overlay_boxes(self, image, predictions, alpha=0.5, box_pixel = 3):
+    def overlay_boxes(self, image, predictions, alpha=0.5, box_pixel = 2):
         labels = predictions.get_field("labels")
         boxes = predictions.bbox
 
-        colors = self.compute_colors_for_labels(labels).tolist()
+        self.colors = self.compute_colors_for_labels(labels).tolist()
         new_image = image.copy()
-        for box, color in zip(boxes, colors):
+        for box, color in zip(boxes, self.colors):
             box = box.to(torch.int64)
             top_left, bottom_right = box[:2].tolist(), box[2:].tolist()
             new_image = cv2.rectangle(
@@ -328,7 +329,7 @@ class GLIPDemo(object):
 
         return image
 
-    def overlay_entity_names(self, image, predictions, names=None, text_size=1.0, text_pixel=2, text_offset = 10, text_offset_original = 4):
+    def overlay_entity_names(self, image, predictions, names=None, text_size=0.3, text_pixel=1, text_offset = 10, text_offset_original = 4):
         scores = predictions.get_field("scores").tolist()
         labels = predictions.get_field("labels").tolist()
         new_labels = []
@@ -350,15 +351,20 @@ class GLIPDemo(object):
 
         template = "{}:{:.2f}"
         previous_locations = []
-        for box, score, label in zip(boxes, scores, new_labels):
+        if os.path.exists('PREDICTIONS/test.txt'):
+            os.remove('PREDICTIONS/test.txt')
+        for i, color, box, score, label in zip(np.arange(len(scores)), self.colors, boxes, scores, new_labels):
             x, y = box[:2]
             s = template.format(label, score).replace("_", " ").replace("(", "").replace(")", "")
+            with open('PREDICTIONS/test.txt', 'a') as f:
+                f.write(str(i) + ':' + s + '\n')
+            s = str(i)
             for x_prev, y_prev in previous_locations:
                 if abs(x - x_prev) < abs(text_offset) and abs(y - y_prev) < abs(text_offset):
                     y -= text_offset
 
             cv2.putText(
-                image, s, (int(x), int(y)-text_offset_original), cv2.FONT_HERSHEY_SIMPLEX, text_size, (self.color, self.color, self.color), text_pixel, cv2.LINE_AA
+                image, s, (int(x), int(y)-text_offset_original), cv2.FONT_HERSHEY_SIMPLEX, text_size, color, text_pixel, cv2.LINE_AA
             )
             previous_locations.append((int(x), int(y)))
 
