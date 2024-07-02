@@ -66,10 +66,10 @@ def main():
     ### Create a subset Dataset with less datapoints
 
     # Extract a subset of test image annotations
-    n = 10
+    n = 1000
     input_file_path = 'DATASET_b/mdetr_annotations/final_flickr_separateGT_test.json'
     output_file_path = 'DATASET/mdetr_annotations/final_flickr_separateGT_test.json'
-    filtered_image_files_test = extract_image_annotations(input_file_path, output_file_path , n+1)
+    filtered_image_files_test = extract_image_annotations(input_file_path, output_file_path , n)
 
     # Extract a subset of valiation image annotations
     input_file_path = 'DATASET_b/mdetr_annotations/final_flickr_separateGT_val.json'
