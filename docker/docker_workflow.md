@@ -14,4 +14,6 @@ python tools/test_grounding_net.py --config-file configs/pretrain/glip_Swin_T_O3
 
 # Flickr 30k Evaluation
 python tools/test_grounding_net.py --config-file configs/pretrain/glip_Swin_T_O365_GoldG.yaml --task_config configs/flickr/test.yaml,configs/flickr/val.yaml --weight MODEL/glip_tiny_model_o365_goldg.pth OUTPUT_DIR PREDICTIONS TEST.IMS_PER_BATCH 1 SOLVER.IMS_PER_BATCH 1 TEST.MDETR_STYLE_AGGREGATE_CLASS_NUM 100 TEST.EVAL_TASK grounding MODEL.DYHEAD.FUSE_CONFIG.MLM_LOSS False
+
+python demo_of_glip.py
 ```
