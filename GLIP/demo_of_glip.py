@@ -58,11 +58,11 @@ def load(image_path):
     image = np.array(pil_image)[:, :, [2, 1, 0]]
     return image
 
-def imshow(img, caption):
+def imshow(img, caption, output_file_path):
     plt.imshow(img[:, :, [2, 1, 0]])
     plt.axis("off")
     plt.figtext(0.5, 0.09, caption, wrap=True, horizontalalignment='center', fontsize=20)
-    plt.savefig("PREDICTIONS/test.jpg")
+    plt.savefig(output_file_path + '.jpg')
 
 # Use this command for evaluate the GLPT-T model
 # ! wget https://penzhanwu2bbs.blob.core.windows.net/data/GLIPv1_Open/models/glip_tiny_model_o365_goldg_cc_sbu.pth -O MODEL/glip_tiny_model_o365_goldg_cc_sbu.pth
@@ -91,11 +91,27 @@ glip_demo = GLIPDemo(
 
 """Next, we retrieve an image on which we wish to test the model. Here, we use an image from the validation set of COCO"""
 
-image = load('DATASET/flickr30k/flickr30k_images/test/316298162.jpg')
-caption = "A group of men in suits are walking down a park sidewalk ."
-result, _ = glip_demo.run_on_web_image(image, caption, 0.5)
-imshow(result, caption)
+# Predict test images
+# v = 'test' or 'val'
+# image_file_path = 'DATASET/flickr30k/flickr30k_images/test/'
+# annotation_file_path = 'DATASET/mdetr_annotations/final_flickr_separateGT_test.json'
+# output_file_path = 'PREDICTIONS/'
+# def f(image_file_path, annotation_file_path, output_file_path):
+#     with open(annotation_file_path, 'r') as file:
+#         json_data = json.load(file)
+#     for image_annotation in json_data.get('images', []):
+#         file_name = image_annotation.get('file_name')
+#         image = load(image_file_path + file_name)
+#         caption = image_annotation.get('caption')
+#         result, _ = glip_demo.run_on_web_image(image, caption, 0.6)
+#         imshow(result, caption, output_file_path + file_name)
 
+
+output_file_path = 'PREDICTIONS/1000092795'
+image = load('DATASET/flickr30k/flickr30k_images/test/1000092795.jpg')
+caption = 'Two young guys with shaggy hair look at their hands while hanging out in the yard'
+result, _ = glip_demo.run_on_web_image(original_image=image, original_caption=caption, thresh=0.6, output_file_path=output_file_path)
+imshow(result, caption, output_file_path)
 # image = load('http://farm4.staticflickr.com/3693/9472793441_b7822c00de_z.jpg')
 # caption = 'sofa . remote . dog . person . car . sky . plane .' # the caption can also be the simple concatonation of some random categories.
 # result, _ = glip_demo.run_on_web_image(image, caption, 0.5)

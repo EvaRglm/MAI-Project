@@ -137,7 +137,8 @@ class GLIPDemo(object):
             original_caption, 
             thresh=0.5,
             custom_entity = None,
-            alpha = 0.0):
+            alpha = 0.0,
+            output_file_path = None):
         predictions = self.compute_prediction(original_image, original_caption, custom_entity)
         top_predictions = self._post_process(predictions, thresh)
 
@@ -145,7 +146,7 @@ class GLIPDemo(object):
         if self.show_mask_heatmaps:
             return self.create_mask_montage(result, top_predictions)
         result = self.overlay_boxes(result, top_predictions)
-        result = self.overlay_entity_names(result, top_predictions)
+        result = self.overlay_entity_names(image=result, predictions=top_predictions, output_file_path=output_file_path)
         if self.cfg.MODEL.MASK_ON:
             result = self.overlay_mask(result, top_predictions)
         return result, top_predictions
@@ -286,6 +287,7 @@ class GLIPDemo(object):
 
         scores = predictions.get_field("scores")
         _, idx = scores.sort(0, descending=True)
+        idx = idx[:5]
         return predictions[idx]
 
     def compute_colors_for_labels(self, labels):
@@ -298,9 +300,10 @@ class GLIPDemo(object):
             colors = (colors * 0 + self.color).astype("uint8")
         except:
             pass
+        colors = np.array([[0, 0, 255] for _ in colors])
         return colors
 
-    def overlay_boxes(self, image, predictions, alpha=0.5, box_pixel = 2):
+    def overlay_boxes(self, image, predictions, alpha=0.5, box_pixel = 1):
         labels = predictions.get_field("labels")
         boxes = predictions.bbox
 
@@ -329,7 +332,7 @@ class GLIPDemo(object):
 
         return image
 
-    def overlay_entity_names(self, image, predictions, names=None, text_size=0.3, text_pixel=1, text_offset = 10, text_offset_original = 4):
+    def overlay_entity_names(self, image, predictions, names=None, text_size=0.3, text_pixel=1, text_offset = 10, text_offset_original = 4, output_file_path=None):
         scores = predictions.get_field("scores").tolist()
         labels = predictions.get_field("labels").tolist()
         new_labels = []
@@ -351,12 +354,12 @@ class GLIPDemo(object):
 
         template = "{}:{:.2f}"
         previous_locations = []
-        if os.path.exists('PREDICTIONS/test.txt'):
-            os.remove('PREDICTIONS/test.txt')
+        if os.path.exists(output_file_path + '.txt'):
+            os.remove(output_file_path + '.txt')
         for i, color, box, score, label in zip(np.arange(len(scores)), self.colors, boxes, scores, new_labels):
             x, y = box[:2]
             s = template.format(label, score).replace("_", " ").replace("(", "").replace(")", "")
-            with open('PREDICTIONS/test.txt', 'a') as f:
+            with open(output_file_path + '.txt', 'a') as f:
                 f.write(str(i) + ':' + s + '\n')
             s = str(i)
             for x_prev, y_prev in previous_locations:
