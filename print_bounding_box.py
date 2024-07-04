@@ -1,42 +1,43 @@
 import cv2
-import pandas as pd
+import json
 
-def draw_bounding_boxes(image, boxes, category_ids, scores, color=(0, 255, 0), thickness=2):
-    for box, category_id, score in zip(boxes, category_ids, scores):
-        x, y, w, h = box
-        cv2.rectangle(image, (x, y), (x+w, y+h), color, thickness)
-        label = f'Category: {category_id}, Score: {score:.2f}'
-        cv2.putText(image, label, (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, thickness)
+def draw_bounding_boxes(image, boxes, scores, color=(0, 255, 0), thickness=2):
+    for box, score in zip(boxes, scores):
+        x, y, w, h = map(int, box)
+        cv2.rectangle(image, (x, y), (x + w, y + h), color, thickness)
+        label = f'Score: {score:.2f}'
+        cv2.putText(image, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, thickness)
     return image
 
 def process_images(data_file):
-    # Read the data file
-    df = pd.read_csv(data_file)
+    # Load the JSON data
+    with open(data_file, 'r') as file:
+        data = json.load(file)
 
-    # Group the data by image_id
-    grouped = df.groupby('image_id')
+    # Process each image's data
+    for item in data:
+        image_id = item['image_id']
+        boxes = item['boxes'][0]  # Extracting the first list of boxes for simplicity
+        scores = item['scores'][0]  # Extracting the first list of scores for simplicity
 
-    for image_id, group in grouped:
+        # Construct the image file name
+        image_filename = f'{image_id}.jpg'
+        
         # Read the image
-        image = cv2.imread(image_id)
+        image = cv2.imread(image_filename)
         if image is None:
-            print(f"Error: Image {image_id} not found.")
+            print(f"Error: Image {image_filename} not found.")
             continue
 
-        # Extract bounding boxes, category_ids, and scores
-        boxes = group[['x', 'y', 'width', 'height']].values
-        category_ids = group['category_id'].values
-        scores = group['score'].values
-
         # Draw bounding boxes on the image
-        image_with_boxes = draw_bounding_boxes(image, boxes, category_ids, scores)
+        image_with_boxes = draw_bounding_boxes(image, boxes, scores)
 
         # Save or display the image
-        output_filename = f'output_{image_id}'
+        output_filename = f'output_{image_id}.jpg'
         cv2.imwrite(output_filename, image_with_boxes)
-        print(f"Processed {image_id} and saved as {output_filename}")
+        print(f"Processed {image_filename} and saved as {output_filename}")
 
 if __name__ == "__main__":
     # Path to the data file
-    data_file = 'data.csv'
+    data_file = '/mnt/data/bbox.json'
     process_images(data_file)
