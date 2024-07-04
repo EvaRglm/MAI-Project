@@ -147,10 +147,10 @@ def create_dataset_structure():
     save_file_names(file_path, filtered_image_files_val)
 
 def main():
-    # create_folder_structure()
+    create_folder_structure()
     # Copy changed test images into the folders: DATASET/flickr30k/flickr30k_images/test, DATASET/flickr30k/flickr30k_images
     # Copy changed val images into the folders: DATASET/flickr30k/flickr30k_images/val, DATASET/flickr30k/flickr30k_images
-    create_dataset_structure()
+    # create_dataset_structure()
 
 if __name__ == '__main__':
     main()
