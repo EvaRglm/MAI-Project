@@ -1,3 +1,6 @@
 GLIP/MODEL/*
 GLIP/DATASET*
 DATASET*
+.idea
+.lightning_studio
+.vscode
