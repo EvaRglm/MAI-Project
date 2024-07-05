@@ -39,6 +39,7 @@ Welcome to the demo notebook for GLIP https://github.com/microsoft/GLIP!
 import matplotlib.pyplot as plt
 import matplotlib.pylab as pylab
 
+import json
 import requests
 from io import BytesIO
 from PIL import Image
@@ -93,25 +94,26 @@ glip_demo = GLIPDemo(
 
 # Predict test images
 # v = 'test' or 'val'
-# image_file_path = 'DATASET/flickr30k/flickr30k_images/test/'
-# annotation_file_path = 'DATASET/mdetr_annotations/final_flickr_separateGT_test.json'
-# output_file_path = 'PREDICTIONS/'
-# def f(image_file_path, annotation_file_path, output_file_path):
-#     with open(annotation_file_path, 'r') as file:
-#         json_data = json.load(file)
-#     for image_annotation in json_data.get('images', []):
-#         file_name = image_annotation.get('file_name')
-#         image = load(image_file_path + file_name)
-#         caption = image_annotation.get('caption')
-#         result, _ = glip_demo.run_on_web_image(image, caption, 0.6)
-#         imshow(result, caption, output_file_path + file_name)
-
-
+image_file_path = 'DATASET/flickr30k/flickr30k_images/test/'
+annotation_file_path = 'DATASET/mdetr_annotations/final_flickr_separateGT_test.json'
+output_file_path = 'PREDICTIONS/'
+def f(image_file_path, annotation_file_path, output_file_path):
+    with open(annotation_file_path, 'r') as file:
+        json_data = json.load(file)
+    for image_annotation in json_data.get('images', []):
+        file_name = image_annotation.get('file_name')
+        image = load(image_file_path + file_name)
+        caption = image_annotation.get('caption')
+        result, _ = glip_demo.run_on_web_image(original_image=image, original_caption=caption, thresh=0.6, output_file_path=output_file_path)
+        imshow(result, caption, output_file_path + file_name)
+f(image_file_path, annotation_file_path, output_file_path)
+"""
 output_file_path = 'PREDICTIONS/1000092795'
 image = load('DATASET/flickr30k/flickr30k_images/test/1000092795.jpg')
 caption = 'Two young guys with shaggy hair look at their hands while hanging out in the yard'
 result, _ = glip_demo.run_on_web_image(original_image=image, original_caption=caption, thresh=0.6, output_file_path=output_file_path)
 imshow(result, caption, output_file_path)
+"""
 # image = load('http://farm4.staticflickr.com/3693/9472793441_b7822c00de_z.jpg')
 # caption = 'sofa . remote . dog . person . car . sky . plane .' # the caption can also be the simple concatonation of some random categories.
 # result, _ = glip_demo.run_on_web_image(image, caption, 0.5)
