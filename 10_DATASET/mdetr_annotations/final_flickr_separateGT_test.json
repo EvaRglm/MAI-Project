@@ -1,0 +1,13 @@
+{
+  "info": [],
+  "licenses": [],
+  "images": [],
+  "annotations": [],
+  "categories": [
+    {
+      "supercategory": "object",
+      "id": 1,
+      "name": "object"
+    }
+  ]
+}
