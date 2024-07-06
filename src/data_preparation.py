@@ -3,6 +3,11 @@ import re
 import cv2
 import xml.etree.ElementTree as ET
 import re
+import numpy as np
+import random
+
+
+
 
 def extract_number_from_sentence(sentence_file):
     with open(sentence_file, 'r') as file:
@@ -31,7 +36,7 @@ def find_bounding_boxes(annotation_file, numbers):
 def calculate_area(bbox):
     xmin, ymin, xmax, ymax = bbox
     return (xmax - xmin) * (ymax - ymin)
-
+    
 def process_images(image_folder, sentence_folder, annotation_folder, output_folder):
     for image_filename in os.listdir(image_folder): #open the image
         if not image_filename.endswith('.jpg'):
@@ -55,7 +60,8 @@ def process_images(image_folder, sentence_folder, annotation_folder, output_fold
         
         max_bbox = max(bboxes, key=calculate_area) #calculate max bounding box
         #you can put the necessary work in here instead to the image with the bounding box
-        draw_bounding_box(image_path, bboxes, output_folder, image_id) 
+        # draw_bounding_box(image_path, bboxes, output_folder, image_id) 
+
 
 def draw_bounding_box(image_path, bboxes, output_folder, image_id):
     image = cv2.imread(image_path)
@@ -74,10 +80,10 @@ def draw_bounding_box(image_path, bboxes, output_folder, image_id):
     print(f"Processed {image_id} and saved as {output_filename}")
 
 if __name__ == "__main__":
-    image_folder = 'flickr30k_images'
+    image_folder = 'flickr30k_images/test'
     sentence_folder = os.path.join('flickr30k', 'Sentences')
     annotation_folder = os.path.join('flickr30k', 'Annotations')
-    output_folder = 'output_images'
+    output_folder = 'output_images_noised'
 
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
