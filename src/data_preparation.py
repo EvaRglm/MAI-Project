@@ -25,25 +25,22 @@ def find_bounding_boxes(annotation_file, numbers):
         name = obj.find('name').text
         if any(number in name for number in numbers):
             bndbox = obj.find('bndbox')
-            if bndbox is not None:
-                xmin = bndbox.find('xmin')
-                ymin = bndbox.find('ymin')
-                xmax = bndbox.find('xmax')
-                ymax = bndbox.find('ymax')
-                
-                if xmin is not None and ymin is not None and xmax is not None and ymax is not None:
-                    xmin = int(xmin.text)
-                    ymin = int(ymin.text)
-                    xmax = int(xmax.text)
-                    ymax = int(ymax.text)
-                    bboxes.append((xmin, ymin, xmax, ymax))
+            if bndbox == None:
+                print("none")
+            else:
+                bndbox = obj.find('bndbox')
+                xmin = int(bndbox.find('xmin').text)
+                ymin = int(bndbox.find('ymin').text)
+                xmax = int(bndbox.find('xmax').text)
+                ymax = int(bndbox.find('ymax').text)
+                bboxes.append((xmin, ymin, xmax, ymax))
     print(bboxes)
     return bboxes
 
 def calculate_area(bbox):
     xmin, ymin, xmax, ymax = bbox
     return (xmax - xmin) * (ymax - ymin)
-    
+
 def process_images(image_folder, sentence_folder, annotation_folder, output_folder):
     for image_filename in os.listdir(image_folder): #open the image
         if not image_filename.endswith('.jpg'):
@@ -56,14 +53,15 @@ def process_images(image_folder, sentence_folder, annotation_folder, output_fold
 
         if not os.path.exists(sentence_path) or not os.path.exists(annotation_path): #if there is a missing file skip this image
             print(f"Missing files for {image_id}")
-            break
+            continue
         
         numbers = extract_number_from_sentence(sentence_path) #find the number for person tag
+        
         bboxes = find_bounding_boxes(annotation_path, numbers) #find al the bounding boxes
         
         if not bboxes:
-            print(f"No bounding boxes found for {image_id} with number {number}") #if there is not a person tag skip the image
-            break
+            print(f"No bounding boxes found for {image_id} with number") #if there is not a person tag skip the image
+            continue
         
         max_bbox = max(bboxes, key=calculate_area) #calculate max bounding box
         #you can put the necessary work in here instead to the image with the bounding box
@@ -87,10 +85,15 @@ def draw_bounding_box(image_path, bboxes, output_folder, image_id):
     print(f"Processed {image_id} and saved as {output_filename}")
 
 if __name__ == "__main__":
-    image_folder = 'flickr30k_images/test'
-    sentence_folder = os.path.join('flickr30k', 'Sentences')
-    annotation_folder = os.path.join('flickr30k', 'Annotations')
-    output_folder = 'output_images_noised'
+    """image_folder = 'DATASET/flickr30k/flickr30k_images/test'
+    sentence_folder = os.path.join('DATASET/flickr30k/flickr30k', 'Sentences')
+    annotation_folder = os.path.join('DATASET/flickr30k/flickr30k', 'Annotations')
+    output_folder = 'output_images_noised_10' """
+    image_folder = '/teamspace/studios/this_studio/IMAGES_ATTACK/10_images_original'
+    sentence_folder = os.path.join('/teamspace/studios/this_studio/PREDICTIONS_ATTACK/10_images_original', 'Sentences')
+    annotation_folder = os.path.join('/teamspace/studios/this_studio/PREDICTIONS_ATTACK/10_images_original', 'Annotations')
+    output_folder = 'output_images_noised_10'
+
 
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
