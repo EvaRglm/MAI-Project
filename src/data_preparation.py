@@ -42,6 +42,7 @@ def calculate_area(bbox):
     return (xmax - xmin) * (ymax - ymin)
 
 def process_images(image_folder, sentence_folder, annotation_folder, output_folder):
+    bounding_boxes_data = []
     for image_filename in os.listdir(image_folder): #open the image
         if not image_filename.endswith('.jpg'):
             continue
@@ -56,16 +57,17 @@ def process_images(image_folder, sentence_folder, annotation_folder, output_fold
             continue
         
         numbers = extract_number_from_sentence(sentence_path) #find the number for person tag
-        
-        bboxes = find_bounding_boxes(annotation_path, numbers) #find al the bounding boxes
+        bboxes = find_bounding_boxes(annotation_path, numbers) #find all the bounding boxes
         
         if not bboxes:
-            print(f"No bounding boxes found for {image_id} with number") #if there is not a person tag skip the image
+            print(f"No bounding boxes found for {image_id} with numbers {numbers}") #if there is not a person tag skip the image
             continue
         
-        max_bbox = max(bboxes, key=calculate_area) #calculate max bounding box
-        #you can put the necessary work in here instead to the image with the bounding box
-        # draw_bounding_box(image_path, bboxes, output_folder, image_id) 
+        bounding_boxes_data.append((image_path, bboxes, image_id))
+        
+        draw_bounding_box(image_path, bboxes, output_folder, image_id)
+        
+    return bounding_boxes_data
 
 
 def draw_bounding_box(image_path, bboxes, output_folder, image_id):
