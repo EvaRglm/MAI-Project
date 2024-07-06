@@ -1,2 +1,1 @@
-0:young boys:0.88
-1:young boys:0.85
+0:a man:0.83

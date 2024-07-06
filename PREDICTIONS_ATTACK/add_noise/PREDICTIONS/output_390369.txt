@@ -1,0 +1,3 @@
+0:a street:0.77
+1:a street performer:0.77
+2:a statue:0.75

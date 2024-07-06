@@ -94,7 +94,7 @@ glip_demo = GLIPDemo(
 
 # Predict test images
 # v = 'test' or 'val'
-image_file_path = 'DATASET/flickr30k/flickr30k_images/test/'
+""" image_file_path = 'DATASET/flickr30k/flickr30k_images/test/'
 annotation_file_path = 'DATASET/mdetr_annotations/final_flickr_separateGT_test.json'
 output_file_path = 'PREDICTIONS/'
 def f(image_file_path, annotation_file_path, output_file_path):
@@ -106,14 +106,14 @@ def f(image_file_path, annotation_file_path, output_file_path):
         caption = image_annotation.get('caption')
         result, _ = glip_demo.run_on_web_image(original_image=image, original_caption=caption, thresh=0.6, output_file_path=output_file_path)
         imshow(result, caption, output_file_path + file_name)
-f(image_file_path, annotation_file_path, output_file_path)
-"""
-output_file_path = 'PREDICTIONS/1000092795'
-image = load('DATASET/flickr30k/flickr30k_images/test/1000092795.jpg')
-caption = 'Two young guys with shaggy hair look at their hands while hanging out in the yard'
+f(image_file_path, annotation_file_path, output_file_path)"""
+
+output_file_path = 'output_images_noised_10/PREDICTIONS/output_7998492801'
+image = load('output_images_noised_10/output_7998492801.jpg')
+caption = 'On a football field, a football player wearing a Raiders uniform carries a football and runs away from a football player wearing a Dolphins uniform.'
 result, _ = glip_demo.run_on_web_image(original_image=image, original_caption=caption, thresh=0.6, output_file_path=output_file_path)
 imshow(result, caption, output_file_path)
-"""
+
 # image = load('http://farm4.staticflickr.com/3693/9472793441_b7822c00de_z.jpg')
 # caption = 'sofa . remote . dog . person . car . sky . plane .' # the caption can also be the simple concatonation of some random categories.
 # result, _ = glip_demo.run_on_web_image(image, caption, 0.5)

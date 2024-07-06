@@ -1,0 +1,5 @@
+0:a group:0.85
+1:people:0.85
+2:shorts:0.78
+3:short-sleeve shirts:0.77
+4:short-sleeve shirts:0.77

@@ -1,0 +1,5 @@
+0:a football player:0.84
+1:a football field:0.84
+2:object:0.70
+3:a football player:0.68
+4:object:0.68
