@@ -25,11 +25,18 @@ def find_bounding_boxes(annotation_file, numbers):
         name = obj.find('name').text
         if any(number in name for number in numbers):
             bndbox = obj.find('bndbox')
-            xmin = int(bndbox.find('xmin').text)
-            ymin = int(bndbox.find('ymin').text)
-            xmax = int(bndbox.find('xmax').text)
-            ymax = int(bndbox.find('ymax').text)
-            bboxes.append((xmin, ymin, xmax, ymax))
+            if bndbox is not None:
+                xmin = bndbox.find('xmin')
+                ymin = bndbox.find('ymin')
+                xmax = bndbox.find('xmax')
+                ymax = bndbox.find('ymax')
+                
+                if xmin is not None and ymin is not None and xmax is not None and ymax is not None:
+                    xmin = int(xmin.text)
+                    ymin = int(ymin.text)
+                    xmax = int(xmax.text)
+                    ymax = int(ymax.text)
+                    bboxes.append((xmin, ymin, xmax, ymax))
     print(bboxes)
     return bboxes
 
