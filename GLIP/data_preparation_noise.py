@@ -42,37 +42,78 @@ def calculate_area(bbox):
     return (xmax - xmin) * (ymax - ymin)
 
 
+import os
+import cv2
+import numpy as np
+import random
+
 def add_salt_and_pepper_noise(image_path, max_bbox, output_folder, image_id, salt_prob=0.4, pepper_prob=0.4):
     image = cv2.imread(image_path)
     if image is not None:
-    # x, y, w, h = coords
         xmin, ymin, xmax, ymax = max_bbox
-        w = np.abs(xmax-xmin)
-        h = np.abs(ymax-ymin)
-        noisy_part = image[ymin:ymax, xmin:xmax]
-        total_pixels = w * h
+        bbox_height = ymax - ymin
+        bbox_width = xmax - xmin
+        upper_quarter_height = bbox_height // 2
+
+        upper_quarter = image[ymin:ymin + upper_quarter_height, xmin:xmax]
+
+        total_pixels = upper_quarter.size // 3  # Number of pixels in the upper quarter (since each pixel has 3 values for RGB)
         num_salt = np.ceil(salt_prob * total_pixels)
         num_pepper = np.ceil(pepper_prob * total_pixels)
-    
+
         # Add salt noise (white pixels)
         for _ in range(int(num_salt)):
-            i = random.randint(0, h-1)
-            j = random.randint(0, w-1)
-            noisy_part[i, j] = 255
+            i = random.randint(0, upper_quarter_height - 1)
+            j = random.randint(0, bbox_width - 1)
+            upper_quarter[i, j] = 255
 
         # Add pepper noise (black pixels)
         for _ in range(int(num_pepper)):
-            i = random.randint(0, h-1)
-            j = random.randint(0, w-1)
-            noisy_part[i, j] = 0
+            i = random.randint(0, upper_quarter_height - 1)
+            j = random.randint(0, bbox_width - 1)
+            upper_quarter[i, j] = 0
 
-        image[ymin:ymax, xmin:xmax] = noisy_part
-        output_filename = os.path.join(output_folder, f'output_{image_id}.jpg')
+        # Replace the upper quarter of the original image with the noisy one
+        image[ymin:ymin + upper_quarter_height, xmin:xmax] = upper_quarter
+
+        output_filename = os.path.join(output_folder, f'{image_id}.jpg')
         cv2.imwrite(output_filename, image)
         print(f"Processed {image_id} and saved as {output_filename}")
+
     
 
+def add_salt_and_pepper_noise_down(image_path, max_bbox, output_folder, image_id, salt_prob=0.4, pepper_prob=0.4):
+    image = cv2.imread(image_path)
+    if image is not None:
+        xmin, ymin, xmax, ymax = max_bbox
+        bbox_height = ymax - ymin
+        bbox_width = xmax - xmin
+        left_quarter_width = bbox_width // 2
 
+        left_quarter = image[ymin:ymax, xmin:xmin + left_quarter_width]
+
+        total_pixels = left_quarter.size // 3  # Number of pixels in the left quarter (since each pixel has 3 values for RGB)
+        num_salt = np.ceil(salt_prob * total_pixels)
+        num_pepper = np.ceil(pepper_prob * total_pixels)
+
+        # Add salt noise (white pixels)
+        for _ in range(int(num_salt)):
+            i = random.randint(0, bbox_height - 1)
+            j = random.randint(0, left_quarter_width - 1)
+            left_quarter[i, j] = 255
+
+        # Add pepper noise (black pixels)
+        for _ in range(int(num_pepper)):
+            i = random.randint(0, bbox_height - 1)
+            j = random.randint(0, left_quarter_width - 1)
+            left_quarter[i, j] = 0
+
+        # Replace the left quarter of the original image with the noisy one
+        image[ymin:ymax, xmin:xmin + left_quarter_width] = left_quarter
+
+        output_filename = os.path.join(output_folder, f'{image_id}.jpg')
+        cv2.imwrite(output_filename, image)
+        print(f"Processed {image_id} and saved as {output_filename}")
 
 def process_images(image_folder, sentence_folder, annotation_folder, output_folder):
     for image_filename in os.listdir(image_folder): #open the image
@@ -99,7 +140,7 @@ def process_images(image_folder, sentence_folder, annotation_folder, output_fold
         max_bbox = max(bboxes, key=calculate_area) #calculate max bounding box
         #you can put the necessary work in here instead to the image with the bounding box
         # draw_bounding_box(image_path, bboxes, output_folder, image_id) 
-        image_gaussian_noise = add_salt_and_pepper_noise(image_path, max_bbox, output_folder, image_id)
+        image_gaussian_noise = add_salt_and_pepper_noise_down(image_path, max_bbox, output_folder, image_id)
 
 
 def draw_bounding_box(image_path, bboxes, output_folder, image_id):
@@ -123,10 +164,11 @@ if __name__ == "__main__":
     sentence_folder = os.path.join('DATASET/flickr30k/flickr30k', 'Sentences')
     annotation_folder = os.path.join('DATASET/flickr30k/flickr30k', 'Annotations')
     output_folder = 'output_images_noised_10' """
+
     image_folder = '/teamspace/studios/this_studio/IMAGES_ATTACK/10_images_original'
     sentence_folder = os.path.join('/teamspace/studios/this_studio/PREDICTIONS_ATTACK/10_images_original', 'Sentences')
     annotation_folder = os.path.join('/teamspace/studios/this_studio/PREDICTIONS_ATTACK/10_images_original', 'Annotations')
-    output_folder = 'output_images_noised_10'
+    output_folder = 'output_images_noised_10_50percentleft'
 
 
     if not os.path.exists(output_folder):
