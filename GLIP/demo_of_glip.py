@@ -60,6 +60,7 @@ def load(image_path):
     return image
 
 def imshow(img, caption, output_file_path):
+    plt.clf()
     plt.imshow(img[:, :, [2, 1, 0]])
     plt.axis("off")
     plt.figtext(0.5, 0.09, caption, wrap=True, horizontalalignment='center', fontsize=20)
@@ -94,25 +95,29 @@ glip_demo = GLIPDemo(
 
 # Predict test images
 # v = 'test' or 'val'
-""" image_file_path = 'DATASET/flickr30k/flickr30k_images/test/'
+image_file_path = 'DATASET/flickr30k/flickr30k_images/test/'
 annotation_file_path = 'DATASET/mdetr_annotations/final_flickr_separateGT_test.json'
 output_file_path = 'PREDICTIONS/'
 def f(image_file_path, annotation_file_path, output_file_path):
     with open(annotation_file_path, 'r') as file:
         json_data = json.load(file)
+    file_names = []
     for image_annotation in json_data.get('images', []):
         file_name = image_annotation.get('file_name')
-        image = load(image_file_path + file_name)
-        caption = image_annotation.get('caption')
-        result, _ = glip_demo.run_on_web_image(original_image=image, original_caption=caption, thresh=0.6, output_file_path=output_file_path)
-        imshow(result, caption, output_file_path + file_name)
-f(image_file_path, annotation_file_path, output_file_path)"""
+        if file_name not in file_names:
+            file_names.append(file_name)
+            image = load(image_file_path + file_name)
+            caption = image_annotation.get('caption')
+            file_name = file_name.replace(".jpg", "")
+            result, _ = glip_demo.run_on_web_image(original_image=image, original_caption=caption, thresh=0.6, output_file_path=output_file_path+file_name)
+            imshow(result, caption, output_file_path + file_name)
+f(image_file_path, annotation_file_path, output_file_path)
 
-output_file_path = 'output_images_noised_10/PREDICTIONS/output_7998492801'
-image = load('output_images_noised_10/output_7998492801.jpg')
-caption = 'On a football field, a football player wearing a Raiders uniform carries a football and runs away from a football player wearing a Dolphins uniform.'
-result, _ = glip_demo.run_on_web_image(original_image=image, original_caption=caption, thresh=0.6, output_file_path=output_file_path)
-imshow(result, caption, output_file_path)
+# output_file_path = 'output_images_noised_10/PREDICTIONS/output_7998492801'
+# image = load('output_images_noised_10/output_7998492801.jpg')
+# caption = 'On a football field, a football player wearing a Raiders uniform carries a football and runs away from a football player wearing a Dolphins uniform.'
+# result, _ = glip_demo.run_on_web_image(original_image=image, original_caption=caption, thresh=0.6, output_file_path=output_file_path)
+# imshow(result, caption, output_file_path)
 
 # image = load('http://farm4.staticflickr.com/3693/9472793441_b7822c00de_z.jpg')
 # caption = 'sofa . remote . dog . person . car . sky . plane .' # the caption can also be the simple concatonation of some random categories.

@@ -356,6 +356,7 @@ class GLIPDemo(object):
         previous_locations = []
         if os.path.exists(output_file_path + '.txt'):
             os.remove(output_file_path + '.txt')
+        open(output_file_path + '.txt', 'w').close()
         for i, color, box, score, label in zip(np.arange(len(scores)), self.colors, boxes, scores, new_labels):
             x, y = box[:2]
             s = template.format(label, score).replace("_", " ").replace("(", "").replace(")", "")
