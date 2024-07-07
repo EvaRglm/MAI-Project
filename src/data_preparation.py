@@ -64,28 +64,11 @@ def process_images(image_folder, sentence_folder, annotation_folder, output_fold
             continue
         
         bounding_boxes_data.append((image_path, bboxes, image_id))
-        
-        draw_bounding_box(image_path, bboxes, output_folder, image_id)
-        
+
+
     return bounding_boxes_data
-
-
-def draw_bounding_box(image_path, bboxes, output_folder, image_id):
-    image = cv2.imread(image_path)
-    if image is None:
-        print(f"Error: Image {image_path} not found.")
-        return
+   
         
-    for bbox in bboxes:
-        xmin, ymin, xmax, ymax = bbox
-        color = (0, 255, 0)  # Green
-        thickness = 2
-        cv2.rectangle(image, (xmin, ymin), (xmax, ymax), color, thickness)
-
-    output_filename = os.path.join(output_folder, f'output_{image_id}.jpg')
-    cv2.imwrite(output_filename, image)
-    print(f"Processed {image_id} and saved as {output_filename}")
-
 if __name__ == "__main__":
     """image_folder = 'DATASET/flickr30k/flickr30k_images/test'
     sentence_folder = os.path.join('DATASET/flickr30k/flickr30k', 'Sentences')
