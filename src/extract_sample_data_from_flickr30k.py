@@ -3,7 +3,7 @@ import json
 import shutil
 import regex as re
 
-def extract_image_annotations(input_file_path, output_file_path , n):
+def extract_image_annotations(input_file_path, output_file_path, filtered_image_files_list):
     with open(input_file_path, 'r') as file:
         json_data = json.load(file)
 
@@ -13,13 +13,14 @@ def extract_image_annotations(input_file_path, output_file_path , n):
     categories = json_data.get('categories', [])
     
     # Extract images and annotations with the specific image ids
-    filtered_image_files = list(dict.fromkeys([img.get('file_name') for img in json_data.get('images', [])]))[:n]
+    image_files = list(dict.fromkeys([str(img.get('original_img_id')) for img in json_data.get('images', [])]))
+    filtered_image_files = [f+".jpg" for f in image_files if f in filtered_image_files_list]
     if "92679312.jpg" in filtered_image_files:
         filtered_image_files.remove("92679312.jpg")
     filtered_images = [image for image in json_data.get('images', []) if image.get('file_name') in filtered_image_files]
     filtered_image_ids = [img.get('id') for img in filtered_images]
     filtered_annotations = [annotation for annotation in json_data.get('annotations', []) if annotation.get('image_id') in filtered_image_ids]
-    print(filtered_image_files)
+
     filtered_data = {
         'info': info,
         'licenses': licenses,
@@ -64,51 +65,65 @@ def save_file_names(file_path, filtered_image_files):
 
 def main():
     ### Create a subset Dataset with less datapoints
+    # Read the specified test image files
+    file1 = open('test.txt', 'r') ###
+    filtered_image_files_t = [l.replace("\n","") for l in file1.readlines()] ###
+
+    # Create folder structure
+    folder_structure = [
+    "DATASET_938_img/flickr30k/flickr30k",
+    "DATASET_938_img/flickr30k/flickr30k_images/test",
+    "DATASET_938_img/flickr30k/flickr30k_images/val",
+    "DATASET_938_img/mdetr_annotations"
+    ]
+
+    for folder in folder_structure:
+        os.makedirs(folder, exist_ok=True)
 
     # Extract a subset of test image annotations
     n = 1000
     input_file_path = 'DATASET_b/mdetr_annotations/final_flickr_separateGT_test.json'
-    output_file_path = 'DATASET_s/mdetr_annotations/final_flickr_separateGT_test.json'
-    filtered_image_files_test = extract_image_annotations(input_file_path, output_file_path , n)
+    output_file_path = 'DATASET_938_img/mdetr_annotations/final_flickr_separateGT_test.json'
+    filtered_image_files_test = extract_image_annotations(input_file_path, output_file_path, filtered_image_files_t)
 
     # Extract a subset of valiation image annotations
     input_file_path = 'DATASET_b/mdetr_annotations/final_flickr_separateGT_val.json'
-    output_file_path = 'DATASET_s/mdetr_annotations/final_flickr_separateGT_val.json'
-    filtered_image_files_val = extract_image_annotations(input_file_path, output_file_path , n)
+    output_file_path = 'DATASET_938_img/mdetr_annotations/final_flickr_separateGT_val.json'
+    filtered_image_files_val = extract_image_annotations(input_file_path, output_file_path, [])
 
     filtered_image_files_all = filtered_image_files_test + filtered_image_files_val
 
     # Extract a subset of test images
     input_file_dir = 'DATASET_b/flickr30k/flickr30k_images'
-    output_file_dir = 'DATASET_s/flickr30k/flickr30k_images/test'
+    output_file_dir = 'DATASET_938_img/flickr30k/flickr30k_images/test'
     extract_image_files(input_file_dir, output_file_dir, filtered_image_files_test)
 
     # Extract a subset of validation images
     input_file_dir = 'DATASET_b/flickr30k/flickr30k_images'
-    output_file_dir = 'DATASET_s/flickr30k/flickr30k_images/val'
+    output_file_dir = 'DATASET_938_img/flickr30k/flickr30k_images/val'
     extract_image_files(input_file_dir, output_file_dir, filtered_image_files_val)
 
     # Extract a subset of all images
     input_file_dir = 'DATASET_b/flickr30k/flickr30k_images'
-    output_file_dir = 'DATASET_s/flickr30k/flickr30k_images'
+    output_file_dir = 'DATASET_938_img/flickr30k/flickr30k_images'
     extract_image_files(input_file_dir, output_file_dir, filtered_image_files_all)
 
     # Extract a subset of all Annotations
     input_file_dir = 'DATASET_b/flickr30k/flickr30k/Annotations'
-    output_file_dir = 'DATASET_s/flickr30k/flickr30k/Annotations'
+    output_file_dir = 'DATASET_938_img/flickr30k/flickr30k/Annotations'
     extract_image_files(input_file_dir, output_file_dir, filtered_image_files_all)
 
     # Extract a subset of all Sentences
     input_file_dir = 'DATASET_b/flickr30k/flickr30k/Sentences'
-    output_file_dir = 'DATASET_s/flickr30k/flickr30k/Sentences'
+    output_file_dir = 'DATASET_938_img/flickr30k/flickr30k/Sentences'
     extract_image_files(input_file_dir, output_file_dir, filtered_image_files_all)
 
     # Safe the subset of test image filenames
-    file_path = 'DATASET_s/flickr30k/flickr30k/test.txt'
+    file_path = 'DATASET_938_img/flickr30k/flickr30k/test.txt'
     save_file_names(file_path, filtered_image_files_test)
 
     # Safe the subset of val image filenames
-    file_path = 'DATASET_s/flickr30k/flickr30k/val.txt'
+    file_path = 'DATASET_938_img/flickr30k/flickr30k/val.txt'
     save_file_names(file_path, filtered_image_files_val)
 
 if __name__ == '__main__':
