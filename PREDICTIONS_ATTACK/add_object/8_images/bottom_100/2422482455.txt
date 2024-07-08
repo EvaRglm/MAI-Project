@@ -1,0 +1,2 @@
+0:a black dog:0.86
+1:a stick:0.68

@@ -1,0 +1,5 @@
+0:orange construction hats:0.80
+1:men:0.79
+2:men:0.77
+3:brick stones:0.76
+4:orange construction hats:0.65
