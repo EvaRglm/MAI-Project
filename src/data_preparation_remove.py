@@ -45,7 +45,7 @@ def calculate_area(bbox):
 
 
 
-def inpaint_image(image_path, bounding_boxes_to_remove, output_folder, image_id, percentage=0.50, side='left'):
+def inpaint_image(image_path, bounding_boxes_to_remove, output_folder, image_id, percentage=0.50, side='top'):
     image = cv2.imread(image_path)
     # Extract bounding box coordinates
     xmin, ymin, xmax, ymax = bounding_boxes_to_remove
@@ -130,10 +130,15 @@ if __name__ == "__main__":
     #sentence_folder = os.path.join('flickr30k', 'Sentences')
     #annotation_folder = os.path.join('flickr30k', 'Annotations')
     #output_folder = 'output_images_noised'
-    image_folder = './IMAGES_ATTACK/remove/10_images_original_8'
-    sentence_folder = './IMAGES_ATTACK/remove/10_images_original_8/Sentences/'
-    annotation_folder = './IMAGES_ATTACK/remove/10_images_original_8/Annotations/'
-    output_folder = "./IMAGES_ATTACK/remove/10_images/left_50"
+
+    ###image_folder = './IMAGES_ATTACK/remove/10_images_original_8'
+    ###sentence_folder = './IMAGES_ATTACK/remove/10_images_original_8/Sentences/'
+    ###annotation_folder = './IMAGES_ATTACK/remove/10_images_original_8/Annotations/'
+    ###output_folder = "./IMAGES_ATTACK/remove/10_images/left_50"
+    image_folder = './DATASET_938_img/flickr30k/flickr30k_images/test/'
+    sentence_folder = './DATASET_938_img/flickr30k/flickr30k/Sentences/'
+    annotation_folder = './DATASET_938_img/flickr30k/flickr30k/Annotations/'
+    output_folder = './DATASET_938_img/flickr30k/flickr30k_images/'
 
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
