@@ -1,0 +1,5 @@
+0:children:0.82
+1:baseball caps:0.81
+2:baseball caps:0.78
+3:children:0.70
+4:the sidewalk:0.65

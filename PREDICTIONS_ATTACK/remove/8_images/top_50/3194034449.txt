@@ -1,0 +1,5 @@
+0:the building:0.78
+1:men:0.68
+2:men:0.64
+3:centurion costumes:0.62
+4:centurion costumes:0.60
