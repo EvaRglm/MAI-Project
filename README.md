@@ -2,7 +2,7 @@
 ## Introduction
 Visual Grounding models are multimodal models which aim to aims to detect and locate objects in an image which are referred in a natural language expression. To ensure their reliability in real-world applications it's a crucial task to test their robustness.<br /><br />
 This project aims to check robustness of the GLIP model for the task of Visual Grounding for predicting bounding boxes of persons.<br /><br />
-It was developed as a students project in the course “Multimodal AI” at Technische Universität Darmstadt.
+It was developed as a students project in the course “Multimodal AI”.
 ## Configuration
 The required steps for evaluating or making predictions with the GLIP model are described in the [docker markdown file](docker/docker_workflow.md).
 ## Dataset
