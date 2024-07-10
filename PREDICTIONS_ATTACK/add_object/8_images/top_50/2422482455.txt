@@ -1,0 +1,2 @@
+0:a black dog:0.89
+1:a person:0.82

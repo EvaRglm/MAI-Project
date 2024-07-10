@@ -1,0 +1,5 @@
+0:balloons:0.87
+1:blond girls:0.86
+2:blond girls:0.72
+3:literature:0.65
+4:literature:0.63

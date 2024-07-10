@@ -1,0 +1,3 @@
+0:children:0.87
+1:baseball caps:0.80
+2:hands:0.65

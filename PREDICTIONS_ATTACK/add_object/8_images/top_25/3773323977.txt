@@ -1,0 +1,5 @@
+0:children:0.79
+1:children:0.77
+2:a boat house:0.75
+3:a pond:0.75
+4:children:0.72

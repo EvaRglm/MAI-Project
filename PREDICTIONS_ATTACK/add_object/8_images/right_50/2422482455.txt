@@ -1,0 +1,4 @@
+0:a black dog:0.90
+1:an orange coat:0.74
+2:a person:0.63
+3:a person:0.61
