@@ -88,28 +88,29 @@ def add_salt_and_pepper_noise_down(image_path, max_bbox, output_folder, image_id
         xmin, ymin, xmax, ymax = max_bbox
         bbox_height = ymax - ymin
         bbox_width = xmax - xmin
-        left_quarter_width = bbox_width // 2
+        upper_quarter_height = bbox_height // 2
 
-        left_quarter = image[ymin:ymax, xmin:xmin + left_quarter_width]
+        upper_quarter = image[ymin:ymin + upper_quarter_height, xmin:xmax]
 
-        total_pixels = left_quarter.size // 3  # Number of pixels in the left quarter (since each pixel has 3 values for RGB)
+        total_pixels = upper_quarter.size // 3  # Number of pixels in the upper quarter (since each pixel has 3 values for RGB)
         num_salt = np.ceil(salt_prob * total_pixels)
         num_pepper = np.ceil(pepper_prob * total_pixels)
 
         # Add salt noise (white pixels)
         for _ in range(int(num_salt)):
-            i = random.randint(0, bbox_height - 1)
-            j = random.randint(0, left_quarter_width - 1)
-            left_quarter[i, j] = 255
+            i = random.randint(0, upper_quarter_height - 1)
+            j = random.randint(0, bbox_width - 1)
+            upper_quarter[i, j] = 255
 
         # Add pepper noise (black pixels)
         for _ in range(int(num_pepper)):
-            i = random.randint(0, bbox_height - 1)
-            j = random.randint(0, left_quarter_width - 1)
-            left_quarter[i, j] = 0
+            i = random.randint(0, upper_quarter_height - 1)
+            j = random.randint(0, bbox_width - 1)
+            upper_quarter[i, j] = 0
 
-        # Replace the left quarter of the original image with the noisy one
-        image[ymin:ymax, xmin:xmin + left_quarter_width] = left_quarter
+        # Replace the upper quarter of the original image with the noisy one
+        image[ymin:ymin + upper_quarter_height, xmin:xmax] = upper_quarter
+
 
         output_filename = os.path.join(output_folder, f'{image_id}.jpg')
         cv2.imwrite(output_filename, image)
@@ -160,15 +161,15 @@ def draw_bounding_box(image_path, bboxes, output_folder, image_id):
     print(f"Processed {image_id} and saved as {output_filename}")
 
 if __name__ == "__main__":
-    """image_folder = 'DATASET/flickr30k/flickr30k_images/test'
-    sentence_folder = os.path.join('DATASET/flickr30k/flickr30k', 'Sentences')
-    annotation_folder = os.path.join('DATASET/flickr30k/flickr30k', 'Annotations')
-    output_folder = 'output_images_noised_10' """
+    image_folder = 'DATASET_top_50_noise/flickr30k/flickr30k_images/test'
+    sentence_folder = os.path.join('DATASET_top_50_noise/flickr30k/flickr30k', 'Sentences')
+    annotation_folder = os.path.join('DATASET_top_50_noise/flickr30k/flickr30k', 'Annotations')
+    output_folder = 'DATASET_top_50_noise/flickr30k/flickr30k_images'
 
-    image_folder = '/teamspace/studios/this_studio/IMAGES_ATTACK/10_images_original'
-    sentence_folder = os.path.join('/teamspace/studios/this_studio/PREDICTIONS_ATTACK/10_images_original', 'Sentences')
-    annotation_folder = os.path.join('/teamspace/studios/this_studio/PREDICTIONS_ATTACK/10_images_original', 'Annotations')
-    output_folder = 'output_images_noised_10_50percentleft'
+    # image_folder = '/teamspace/studios/this_studio/IMAGES_ATTACK/10_images_original'
+    # sentence_folder = os.path.join('/teamspace/studios/this_studio/PREDICTIONS_ATTACK/10_images_original', 'Sentences')
+    # annotation_folder = os.path.join('/teamspace/studios/this_studio/PREDICTIONS_ATTACK/10_images_original', 'Annotations')
+    # output_folder = 'output_images_noised_10_50percentleft'
 
 
     if not os.path.exists(output_folder):
