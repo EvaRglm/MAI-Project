@@ -1,0 +1,5 @@
+0:kids:0.77
+1:a wood:0.75
+2:a table:0.71
+3:a man:0.63
+4:kids:0.61
